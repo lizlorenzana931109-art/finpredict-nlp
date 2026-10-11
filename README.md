@@ -460,3 +460,10 @@ Proyecto desarrollado para fines académicos dentro de la asignatura:
 El proyecto busca aplicar criterios técnicos y de negocio para la selección,
 evaluación y recomendación de modelos de inteligencia artificial dentro de un
 caso de uso empresarial.
+
+---
+## Reporte ejecutivo
+
+El análisis comparativo completo del proyecto se encuentra disponible en:
+
+[FinPredict NLP - Reporte Comparativo Actividad 4](A4_LBL_GP.pdf)
