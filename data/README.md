@@ -203,56 +203,65 @@ El balance entre clases permitirá comparar los modelos bajo condiciones control
 
 ## 12. Complejidad lingüística
 
-Además de la clase y el tipo de señal, los textos tendrán distintos niveles de dificultad:
+Los textos se clasifican en tres niveles de dificultad:
 
-| Dificultad | Registros aproximados | Proporción |
-|---|---:|---:|
-| Baja | 800 | 40 % |
-| Media | 800 | 40 % |
-| Alta | 400 | 20 % |
+- `baja`
+- `media`
+- `alta`
+
+A diferencia de la distribución de clases, los niveles de dificultad no se asignan mediante proporciones predeterminadas.
+
+La dificultad se determina mediante reglas lingüísticas observables en cada texto.
 
 ### Dificultad baja
 
-Textos donde la intención es explícita.
+Corresponde principalmente a textos con una intención explícita y directa.
 
 Ejemplo:
 
-> Perdí mi empleo y no puedo cubrir la mensualidad.
+> Perdí mi empleo y no podré cubrir la mensualidad completa.
 
 ### Dificultad media
 
-Textos donde la señal debe interpretarse mediante contexto.
+Incluye textos con incertidumbre, lenguaje indirecto o situaciones que requieren cierto nivel de interpretación contextual.
 
 Ejemplo:
 
-> Este mes recibí menos ingresos y probablemente tenga problemas para completar el pago.
+> Mis ingresos disminuyeron y probablemente tenga dificultades para cubrir la mensualidad.
 
 ### Dificultad alta
 
-Textos con negaciones, temporalidad, lenguaje informal, ambigüedad o información aparentemente contradictoria.
+Incluye textos con elementos como:
+
+- negaciones;
+- situaciones hipotéticas;
+- situaciones financieras ya resueltas;
+- temporalidad;
+- expresiones locales;
+- contraste entre diferentes partes del mensaje;
+- mayor ambigüedad contextual.
 
 Ejemplo:
 
-> Todavía no estoy atrasado, pero me redujeron las horas y el próximo mes no sé si pueda completar la mensualidad.
+> Tuve problemas económicos el mes pasado, pero ya regularicé todos mis pagos.
 
----
+La dificultad se calcula automáticamente durante la generación del dataset para permitir posteriormente el análisis del desempeño de los modelos según la complejidad lingüística.
 
-## 13. Características especiales
+## 13. Lenguaje local
 
-Algunos registros incorporarán características adicionales para evaluar la robustez de los modelos.
+El dataset contiene 400 registros con expresiones o construcciones lingüísticas contextualizadas al español utilizado en México.
 
-| Característica | Registros aproximados |
-|---|---:|
-| Expresiones o vocabulario mexicano | 400 |
-| Negaciones | 200 |
-| Situaciones hipotéticas | 120 |
-| Situaciones resueltas | 100 |
+La distribución se encuentra balanceada entre las dos clases:
 
-Estas características pueden superponerse con otras categorías y no representan grupos independientes.
+| Clase | Lenguaje estándar | Lenguaje local |
+|---|---:|---:|
+| SEÑAL_RIESGO | 800 | 200 |
+| SIN_SEÑAL_RIESGO | 800 | 200 |
+| **Total** | **1,600** | **400** |
 
-Por ejemplo, un registro puede contener simultáneamente una expresión local, una negación y dificultad alta.
+El balance evita que la presencia de lenguaje local quede asociada artificialmente con una determinada clase.
 
----
+Esta característica permitirá analizar posteriormente si el desempeño de los modelos cambia al procesar expresiones locales o lenguaje menos formal.
 
 ## 14. Principio de diseño
 
