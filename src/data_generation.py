@@ -560,6 +560,75 @@ def asignar_dificultad(texto, tipo_senal):
 
     return "baja"
 
+def equilibrar_expresiones_locales(df, objetivo_por_clase=200):
+    """
+    Garantiza una cantidad equilibrada de textos con lenguaje local
+    en ambas clases.
+
+    Objetivo:
+    - 200 SEÑAL_RIESGO
+    - 200 SIN_SEÑAL_RIESGO
+    """
+
+    clases = [
+        "SEÑAL_RIESGO",
+        "SIN_SEÑAL_RIESGO",
+    ]
+
+    for clase in clases:
+
+        indices_locales = df[
+            (df["clase"] == clase)
+            & (df["expresion_local"] == 1)
+        ].index.tolist()
+
+        cantidad_actual = len(indices_locales)
+
+        faltantes = objetivo_por_clase - cantidad_actual
+
+        if faltantes < 0:
+            raise ValueError(
+                f"La clase {clase} ya supera el objetivo "
+                f"de expresiones locales."
+            )
+
+        candidatos = df[
+            (df["clase"] == clase)
+            & (df["expresion_local"] == 0)
+        ].index.tolist()
+
+        seleccionados = random.sample(
+            candidatos,
+            faltantes,
+        )
+
+        for indice in seleccionados:
+
+            prefijo = random.choice(
+                PREFIJOS_LOCALES_NEUTROS
+            )
+
+            texto_original = df.at[indice, "texto"]
+
+            texto_local = (
+                prefijo
+                + texto_original[0].lower()
+                + texto_original[1:]
+            )
+
+            df.at[indice, "texto"] = texto_local
+
+            df.at[indice, "expresion_local"] = 1
+
+            # Recalculamos dificultad porque el lenguaje local
+            # es considerado una característica de complejidad.
+            df.at[indice, "dificultad"] = asignar_dificultad(
+                texto=texto_local,
+                tipo_senal=df.at[indice, "tipo_senal"],
+            )
+
+    return df
+
 # ============================================================
 # GENERACIÓN DE REGISTROS POR CLASE
 # ============================================================
@@ -668,6 +737,12 @@ def generar_dataset():
 
     # Creamos DataFrame
     df = pd.DataFrame(registros)
+
+    # Equilibramos la representación de lenguaje local
+    df = equilibrar_expresiones_locales(
+        df,
+        objetivo_por_clase=200,
+    )
 
     # Creamos identificador único después de mezclar
     df.insert(
