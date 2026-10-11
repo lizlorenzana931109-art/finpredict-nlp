@@ -1,1 +1,11 @@
-
+transformers<5.0.0
+torch
+accelerate
+datasets
+evaluate
+sentencepiece
+sacremoses
+scikit-learn
+pandas
+numpy
+huggingface_hub
