@@ -1,325 +1,108 @@
 # FinPredict NLP
 
-## Identificación temprana de señales de riesgo hipotecario mediante NLP
+Prototipo de Procesamiento de Lenguaje Natural para la identificación temprana
+de señales de dificultad de pago en textos asociados con créditos hipotecarios.
 
-FinPredict NLP es un prototipo de inteligencia artificial orientado a la
-identificación temprana de señales de dificultad de pago en textos de
-atención y gestión con clientes hipotecarios.
+> Proyecto académico desarrollado con datos sintéticos.  
+> No contiene información real de clientes.
 
-El proyecto compara diferentes estrategias de Procesamiento de Lenguaje
-Natural (NLP) utilizando modelos preentrenados disponibles en el ecosistema
-de Hugging Face.
+## Objetivo
 
-> Proyecto académico desarrollado como prueba de concepto.  
-> Los datos utilizados son sintéticos y no contienen información real de clientes.
+Clasificar textos en:
 
----
+- `SEÑAL_RIESGO`
+- `SIN_SEÑAL_RIESGO`
 
-## 1. Problema de negocio
+El propósito es evaluar el uso de modelos preentrenados como apoyo para
+priorizar posibles casos de riesgo y no para automatizar decisiones crediticias.
 
-Los modelos tradicionales de riesgo crediticio suelen apoyarse principalmente
-en variables estructuradas como pagos, atrasos, saldos o comportamiento
-histórico.
+## Modelos evaluados
 
-Sin embargo, durante las interacciones con clientes pueden aparecer señales
-lingüísticas tempranas como:
+Se compararon tres estrategias mediante Hugging Face:
 
-- pérdida de empleo;
-- reducción de ingresos;
-- problemas de liquidez;
-- dificultad para realizar el siguiente pago;
-- solicitudes de reestructura;
-- diferimientos;
-- gastos extraordinarios;
-- situaciones familiares con impacto financiero.
-
-FinPredict NLP explora si estas señales pueden identificarse mediante modelos
-preentrenados de lenguaje antes de que se materialicen en variables
-estructuradas de incumplimiento.
-
----
-
-## 2. Objetivo
-
-Clasificar textos relacionados con clientes hipotecarios en dos categorías:
-
-- `1 = SEÑAL_RIESGO`
-- `0 = SIN_SEÑAL_RIESGO`
-
-El objetivo del prototipo no es automatizar decisiones crediticias, sino
-evaluar la viabilidad de utilizar NLP como mecanismo de priorización para
-acciones preventivas y revisión humana.
-
----
-
-## 3. Dataset
-
-Se generó un dataset sintético y reproducible de:
-
-- 2,000 registros;
-- 1,000 textos con señal de riesgo;
-- 1,000 textos sin señal de riesgo.
-
-Variables:
-
-| Variable | Descripción |
+| Estrategia | Modelo |
 |---|---|
-| `id` | Identificador del registro |
-| `texto` | Texto sintético de interacción |
-| `etiqueta` | Variable binaria objetivo |
-| `clase` | Descripción de la clase |
-| `tipo_senal` | Categoría temática |
-| `dificultad` | Nivel lingüístico asignado |
-| `expresion_local` | Indicador de lenguaje local |
+| Español | `Recognai/zeroshot_selectra_medium` |
+| Multilingüe | `MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7` |
+| Inglés + traducción | `facebook/bart-large-mnli` + `Helsinki-NLP/opus-mt-es-en` |
 
-El dataset incorpora expresiones contextualizadas al español utilizado en
-México para analizar el comportamiento de los modelos ante variaciones
-lingüísticas.
-
-La metodología completa se encuentra en:
-
-`data/README.md`
-
----
-
-## 4. Modelos evaluados
-
-Se analizaron tres estrategias.
-
-### Estrategia 1 — Español
-
-`Recognai/zeroshot_selectra_medium`
-
-Modelo orientado al español utilizado directamente sobre el texto original.
-
-### Estrategia 2 — Multilingüe
-
-`MoritzLaurer/mDeBERTa-v3-base-xnli-multilingual-nli-2mil7`
-
-Modelo multilingüe utilizado directamente sobre los textos en español.
-
-### Estrategia 3 — Inglés + traducción
-
-Traducción:
-
-`Helsinki-NLP/opus-mt-es-en`
-
-Clasificación:
-
-`facebook/bart-large-mnli`
-
-Esta estrategia traduce primero el texto de español a inglés y posteriormente
-realiza la clasificación zero-shot.
-
-Los criterios técnicos utilizados para seleccionar los modelos se documentan
-en:
+Los criterios de selección están documentados en:
 
 `docs/model_selection.md`
 
----
+## Dataset
 
-## 5. Metodología experimental
+Se utilizó un dataset sintético y reproducible de 2,000 registros:
 
-El experimento se dividió en tres conjuntos independientes:
+- 1,000 con señal de riesgo;
+- 1,000 sin señal de riesgo.
 
-| Etapa | Registros | Objetivo |
-|---|---:|---|
-| Piloto | 10 | Exploración inicial |
-| Calibración | 60 | Selección de configuración semántica |
-| Evaluación final | 1,930 | Comparación definitiva |
+Incluye categorías de riesgo, dificultad lingüística y expresiones
+contextualizadas al español utilizado en México.
 
-La configuración semántica seleccionada fue determinada utilizando
-exclusivamente el conjunto de calibración.
+Más información:
 
-Posteriormente quedó congelada antes de evaluar los 1,930 registros finales,
-reduciendo el riesgo de ajustar los prompts a los resultados de evaluación.
+`data/README.md`
 
----
+## Metodología experimental
 
-## 6. Métricas utilizadas
+La evaluación se dividió en:
 
-Para comparar los modelos se calcularon:
+| Etapa | Registros |
+|---|---:|
+| Piloto | 10 |
+| Calibración | 60 |
+| Evaluación final | 1,930 |
 
-- Accuracy
-- Precision
-- Recall
-- F1-score de la clase de riesgo
-- F1 macro
-- Latencia promedio
-- Throughput
+La configuración semántica fue seleccionada con el conjunto de calibración y
+posteriormente se mantuvo fija durante la evaluación final.
 
-También se realizaron análisis segmentados por:
+## Resultados
 
-- dificultad lingüística;
-- presencia de expresiones locales.
-
----
-
-## 7. Resultados finales
-
-| Estrategia | Accuracy | Precision | Recall | F1 riesgo | F1 macro | Latencia |
+| Modelo | Accuracy | Precision | Recall | F1 riesgo | F1 macro | Latencia |
 |---|---:|---:|---:|---:|---:|---:|
 | SELECTRA | 60.73 % | 56.02 % | 99.79 % | 71.76 % | 53.65 % | 5.13 ms |
 | mDeBERTa | 66.42 % | 59.83 % | 100.00 % | 74.86 % | 62.16 % | 10.82 ms |
 | **BART + traducción** | **74.25 %** | **66.01 %** | **100.00 %** | **79.52 %** | **72.42 %** | 61.41 ms |
 
-Los tiempos corresponden al entorno experimental utilizado en Google Colab
-con GPU y no deben interpretarse como latencias garantizadas en producción.
+Los resultados completos se encuentran en:
 
----
+`results/`
 
-## 8. Lenguaje local
+## Modelo recomendado
 
-El desempeño también fue analizado sobre textos con expresiones locales.
+Para la prueba de concepto se recomienda **BART + traducción** debido a que
+obtuvo el mejor desempeño global y mantuvo su ventaja en los análisis por
+dificultad lingüística y lenguaje local.
 
-### F1 macro
+Su principal trade-off es la eficiencia: requiere una etapa adicional de
+traducción y presentó una latencia considerablemente mayor.
 
-| Modelo | Lenguaje estándar | Lenguaje local |
-|---|---:|---:|
-| SELECTRA | 0.5376 | 0.5320 |
-| mDeBERTa | 0.6238 | 0.6127 |
-| **BART + traducción** | **0.7191** | **0.7442** |
+Si el escenario priorizara eficiencia computacional, `mDeBERTa` sería la
+segunda alternativa recomendada.
 
-Dentro del dataset evaluado, la traducción no produjo una pérdida observable
-de desempeño ante las expresiones locales incluidas.
+Debido a la precisión obtenida y al carácter sintético del dataset, la solución
+se plantea como herramienta de priorización con supervisión humana y no como
+mecanismo automático de decisión crediticia.
 
-Este resultado se limita al conjunto sintético utilizado y no implica que
-toda variación regional del español pueda procesarse sin pérdida semántica.
-
----
-
-## 9. Dificultad lingüística
-
-### F1 macro
-
-| Dificultad | SELECTRA | mDeBERTa | BART + traducción |
-|---|---:|---:|---:|
-| Baja | 0.4124 | 0.4574 | **0.6131** |
-| Media | 0.4885 | 0.5761 | **0.6752** |
-| Alta | 0.5466 | 0.6588 | **0.7519** |
-
-BART + traducción mantuvo el mejor desempeño en los tres segmentos.
-
-La dificultad fue definida mediante reglas lingüísticas y se utiliza como
-evidencia complementaria; no representa una medida absoluta de complejidad
-para cada arquitectura.
-
----
-
-## 10. Trade-off entre desempeño y eficiencia
-
-Los resultados muestran un intercambio claro:
-
-**SELECTRA**
-
-- menor latencia;
-- mayor capacidad de procesamiento;
-- menor desempeño global.
-
-**mDeBERTa**
-
-- desempeño intermedio;
-- latencia considerablemente menor que BART;
-- alternativa con buen equilibrio entre calidad y eficiencia.
-
-**BART + traducción**
-
-- mejor desempeño global;
-- mayor robustez en los segmentos analizados;
-- mayor costo computacional;
-- requiere una etapa adicional de traducción.
-
----
-
-## 11. Modelo recomendado
-
-Para la prueba de concepto se recomienda:
-
-### `BART + traducción`
-
-La recomendación se sustenta en:
-
-- mayor accuracy;
-- mayor precision;
-- recall de 100 %;
-- mayor F1 de riesgo;
-- mayor F1 macro;
-- mejor desempeño con lenguaje local;
-- mejor desempeño en los tres niveles de dificultad.
-
-La principal desventaja es su mayor latencia.
-
-Si el escenario de implementación priorizara eficiencia computacional sobre
-la máxima calidad predictiva, `mDeBERTa` sería la segunda alternativa
-recomendada.
-
----
-
-## 12. Consideraciones para implementación
-
-El prototipo no debe utilizarse para tomar decisiones automáticas sobre
-clientes.
-
-Aunque BART + traducción alcanzó recall de 100 %, su precision de 66.01 %
-indica que todavía existe una cantidad relevante de falsos positivos.
-
-Por esta razón, su uso inicial sería como:
-
-**herramienta de priorización + revisión humana**
-
-antes de cualquier acción operativa.
-
-Una implementación productiva requeriría, entre otros elementos:
-
-- validación con datos reales y representativos;
-- participación de las áreas de Riesgo y Operaciones;
-- revisión de sesgos;
-- monitoreo de desempeño;
-- explicabilidad y trazabilidad;
-- definición de umbrales operativos;
-- controles de privacidad y seguridad.
-
----
-
-## 13. Ecosistema Hugging Face
-
-El proyecto utiliza el ecosistema Hugging Face principalmente mediante:
-
-- **Models:** acceso a modelos preentrenados;
-- **Hub:** consulta y descarga de modelos y documentación;
-- **Transformers:** creación de pipelines de inferencia;
-- **Datasets:** disponible dentro del entorno experimental;
-- **Spaces:** identificado como alternativa para una futura demostración interactiva.
-
-La autenticación al Hub se realiza mediante token de lectura y las
-credenciales no se almacenan dentro del repositorio.
-
----
-
-## 14. Estructura del repositorio
+## Estructura del repositorio
 
 ```text
 finpredict-nlp/
-│
 ├── README.md
 ├── requirements.txt
-├── .gitignore
-│
 ├── data/
 │   ├── README.md
 │   └── finpredict_nlp_dataset.csv
-│
 ├── docs/
 │   └── model_selection.md
-│
 ├── notebooks/
 │   ├── 00_dataset_generation_validation.ipynb
 │   └── 01_model_comparison.ipynb
-│
 ├── results/
+│   ├── README.md
 │   ├── metricas_modelos.csv
 │   ├── metricas_por_dificultad.csv
 │   └── metricas_lenguaje_local.csv
-│
 └── src/
     └── data_generation.py
