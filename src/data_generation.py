@@ -432,12 +432,19 @@ CIERRES = [
 EXPRESIONES_LOCALES = [
     "me quedé sin chamba",
     "ando corto",
+    "nomás",
+    "checar"
     "esta quincena",
     "se me juntaron varios pagos",
     "me cayó un gasto fuerte",
     "no me alcanza",
     "me voy a atrasar",
     "el SPEI ya salió",
+]
+
+PREFIJOS_LOCALES_NEUTROS = [
+    "Nomás para comentar: ",
+    "Quería checar algo: ",
 ]
 
 # ============================================================
