@@ -488,20 +488,70 @@ def detectar_expresion_local(texto):
     )
 
 
-def asignar_dificultad():
+def asignar_dificultad(texto, tipo_senal):
     """
-    Asigna un nivel de dificultad lingüística.
+    Asigna dificultad lingüística con base en características
+    observables del texto y del contexto.
 
-    Distribución esperada aproximada:
-    - Baja: 40 %
-    - Media: 40 %
-    - Alta: 20 %
+    - Alta: negaciones, hipótesis, situaciones resueltas,
+      lenguaje local o estructuras con contraste temporal.
+    - Media: lenguaje indirecto, incertidumbre o solicitudes
+      que requieren interpretación contextual.
+    - Baja: intención explícita y directa.
     """
-    return random.choices(
-        population=["baja", "media", "alta"],
-        weights=[40, 40, 20],
-        k=1,
-    )[0]
+
+    texto_lower = texto.lower()
+
+    marcadores_alta = [
+        "no tengo",
+        "no estoy",
+        "no me",
+        "pero ya",
+        "pero el",
+        "si algún día",
+        "si en el futuro",
+        "si perdiera",
+        "si tuviera",
+        "actualmente no",
+        "por ahora puedo",
+        "ya se estabilizó",
+        "ya lo regularicé",
+        "ya está al corriente",
+    ]
+
+    marcadores_media = [
+        "podría",
+        "probablemente",
+        "me preocupa",
+        "quisiera",
+        "alternativa",
+        "temporal",
+        "no sé si",
+        "comenzando a",
+        "necesito revisar",
+    ]
+
+    categorias_alta = {
+        "situacion_hipotetica",
+        "situacion_resuelta",
+        "consulta_preventiva",
+    }
+
+    # Casos contextualmente complejos
+    if tipo_senal in categorias_alta:
+        return "alta"
+
+    if detectar_expresion_local(texto) == 1:
+        return "alta"
+
+    if any(marcador in texto_lower for marcador in marcadores_alta):
+        return "alta"
+
+    # Casos de interpretación intermedia
+    if any(marcador in texto_lower for marcador in marcadores_media):
+        return "media"
+
+    return "baja"
 
 # ============================================================
 # GENERACIÓN DE REGISTROS POR CLASE
@@ -563,7 +613,10 @@ def generar_registros_clase(
                 "etiqueta": etiqueta,
                 "clase": clase,
                 "tipo_senal": tipo_senal,
-                "dificultad": asignar_dificultad(),
+                "dificultad": asignar_dificultad(
+                    texto=texto,    
+                    tipo_senal=tipo_senal,
+                    ),
                 "expresion_local": detectar_expresion_local(texto),
             }
 
