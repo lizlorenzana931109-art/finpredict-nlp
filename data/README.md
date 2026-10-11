@@ -280,3 +280,13 @@ Ejemplo:
 > No me quedé sin trabajo; sólo quiero saber qué opciones tendría si eso ocurriera en el futuro.
 
 Esto permitirá evaluar la capacidad de los modelos para interpretar contexto, negación y temporalidad.
+
+## Reproducibilidad en Google Colab
+
+El proceso de generación y validación del dataset puede reproducirse
+directamente desde Google Colab mediante el siguiente notebook:
+
+[![Abrir en Google Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/lizlorenzana931109-art/finpredict-nlp/blob/main/notebooks/00_dataset_generation_validation.ipynb)
+
+El notebook ejecuta el script `src/data_generation.py`, genera el dataset
+y realiza las validaciones de calidad documentadas en esta sección.
